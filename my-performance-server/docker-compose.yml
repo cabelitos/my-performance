@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  server:
+    build: .
+    image: my-performance-server-api:latest
+    environment:
+      - TYPEORM_HOST=postgres
+      - TYPEORM_USERNAME=${TYPEORM_USERNAME:-my_performance}
+      - TYPEORM_PASSWORD_FILE=/run/secrets/my-performance-db-password
+      - TYPEORM_DATABASE=${TYPEORM_DATABASE:-my_performance_db}
+      - NODE_ENV=production
+    container_name: my-performance-server-api
+    restart: on-failure
+    networks:
+      - private
+      - public
+    ports:
+      - "127.0.0.1:3000:3000"
+    secrets:
+      - my-performance-db-password
+    depends_on:
+      - postgres
+
+  postgres:
+    image: "postgres:alpine"
+    container_name: "my-performance-postgres"
+    restart: "on-failure"
+    ports:
+      - "127.0.0.1:5432:5432"
+    expose:
+      - "5432"
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+    networks:
+      - private
+    secrets:
+      - my-performance-db-password
+    environment:
+      - POSTGRES_USER=${TYPEORM_USERNAME:-my_performance}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/my-performance-db-password
+      - POSTGRES_DB=${TYPEORM_DATABASE:-my_performance_db}
+
+networks:
+  public:
+  private:
+
+volumes:
+  db-data:
+
+secrets:
+  my-performance-db-password:
+    file: .docker-secret-db-password

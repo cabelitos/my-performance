@@ -1,0 +1,11 @@
+**/.vscode/
+**/node_modules/
+**/.gitignore
+**/.eslintcache
+**/build/
+**/*~
+.docker-secret*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
