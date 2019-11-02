@@ -8,6 +8,9 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'prettier/@typescript-eslint',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
   ],
   globals: {
     Atomics: 'readonly',
@@ -17,7 +20,5 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
-  },
-  rules: {
   },
 };
