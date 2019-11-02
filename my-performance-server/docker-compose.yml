@@ -22,7 +22,7 @@ services:
       - postgres
 
   postgres:
-    image: "postgres:alpine"
+    image: "postgres:11-alpine"
     container_name: "my-performance-postgres"
     restart: "on-failure"
     ports:

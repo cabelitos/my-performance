@@ -1,0 +1,15 @@
+entity: PerformanceEntry
+items:
+  performance_entry_user1{1..100}:
+    userId: 'user1@gmail.com'
+    distance: <%= Math.floor(Math.random() * (100 - 10 + 1)) + 10 %>
+    energy: <%= Math.floor(Math.random() * (1000 - 100 + 1)) + 100 %>
+    calories: <%= Math.floor(Math.random() * (1000 - 100 + 1)) + 100 %>
+    date: <%= new Date(Date.now() - (($current) * 86400000)).toISOString() %>
+
+  performance_entry_user2{1..100}:
+    userId: 'user2@gmail.com'
+    distance: <%= Math.floor(Math.random() * (100 - 10 + 1)) + 10 %>
+    energy: <%= Math.floor(Math.random() * (1000 - 100 + 1)) + 100 %>
+    calories: <%= Math.floor(Math.random() * (1000 - 100 + 1)) + 100 %>
+    date: <%= new Date(Date.now() - (($current) * 86400000)).toISOString() %>
