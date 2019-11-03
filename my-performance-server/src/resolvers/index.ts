@@ -1,3 +1,6 @@
-import nodeResolver from './node';
+import merge from 'lodash.merge';
 
-export default nodeResolver;
+import nodeResolver from './node';
+import perfResolvers from './performance-entry';
+
+export default merge(nodeResolver, perfResolvers);

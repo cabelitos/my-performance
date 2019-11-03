@@ -1,10 +1,21 @@
+/* eslint-disable no-fallthrough */
 import {
   Entity,
   BaseEntity,
   PrimaryGeneratedColumn,
   Column,
   Index,
+  getManager,
+  EntityManager,
+  SelectQueryBuilder,
 } from 'typeorm';
+
+import { DateFilter } from '../generated/graphql';
+
+export interface PerformanceEntryRange {
+  totalCount: number; // total count for a given user (all data in the DB)
+  entries: PerformanceEntry[]; // data in the specified range
+}
 
 @Entity()
 export default class PerformanceEntry extends BaseEntity {
@@ -28,4 +39,75 @@ export default class PerformanceEntry extends BaseEntity {
 
   @Column({ type: 'timestamp with time zone', unique: true })
   date: Date;
+
+  static setupDateClause(
+    query: SelectQueryBuilder<PerformanceEntry>,
+    date: Date,
+    filterBy: DateFilter,
+  ): SelectQueryBuilder<PerformanceEntry> {
+    let ret = query;
+    switch (filterBy) {
+      case DateFilter.EqualDay:
+        ret = ret.andWhere('EXTRACT(DAY FROM performance_entry.date) = :day', {
+          day: date.getDate(),
+        });
+      case DateFilter.EqualMonth:
+        ret = ret.andWhere(
+          'EXTRACT(MONTH FROM performance_entry.date) = :month',
+          { month: date.getMonth() + 1 },
+        );
+      case DateFilter.EqualYear:
+        ret = ret.andWhere(
+          'EXTRACT(YEAR FROM performance_entry.date) = :year',
+          { year: date.getFullYear() },
+        );
+        break;
+      default:
+        throw new Error(`Unknown filter - ${filterBy}`);
+    }
+    return ret;
+  }
+
+  static inRange(
+    userId: string,
+    date: Date,
+    filterBy: DateFilter,
+    first: number | undefined,
+    skip: number | undefined,
+  ): Promise<PerformanceEntryRange> {
+    return getManager().transaction(
+      async (manager: EntityManager): Promise<PerformanceEntryRange> => {
+        const totalCount = await PerformanceEntry.setupDateClause(
+          manager
+            .createQueryBuilder(PerformanceEntry, 'performance_entry')
+            .where('performance_entry.userId = :userId', { userId }),
+          date,
+          filterBy,
+        ).getCount();
+        if (!totalCount) {
+          return {
+            totalCount,
+            entries: [],
+          };
+        }
+        const entries = await PerformanceEntry.setupDateClause(
+          manager
+            .createQueryBuilder(PerformanceEntry, 'performance_entry')
+            .where('performance_entry.userId = :userId', { userId }),
+          date,
+          filterBy,
+        )
+          .orderBy({
+            'performance_entry.date': 'DESC',
+          })
+          .skip(skip)
+          .take(first)
+          .getMany();
+        return {
+          totalCount,
+          entries,
+        };
+      },
+    );
+  }
 }
