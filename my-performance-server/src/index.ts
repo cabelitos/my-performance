@@ -1,37 +1,12 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv-flow';
 import { createConnection, getConnectionOptions } from 'typeorm';
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
+
+import typeDefs from './schemas';
+import resolvers from './resolvers';
 
 dotenv.config();
-
-const typeDefs = gql`
-  type Book {
-    title: String
-    author: String
-  }
-
-  type Query {
-    books: [Book]
-  }
-`;
-
-const books = [
-  {
-    title: 'Harry Potter and the Chamber of Secrets',
-    author: 'J.K. Rowling',
-  },
-  {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-  },
-];
-
-const resolvers = {
-  Query: {
-    books: (): typeof books => books,
-  },
-};
 
 const start = async (): Promise<void> => {
   const connectionOptions = await getConnectionOptions();
@@ -45,6 +20,8 @@ const start = async (): Promise<void> => {
     resolvers,
     context: {
       db,
+      // FIXME: get from auth0
+      userId: 'user1@gmail.com',
     },
   });
   const { url } = await server.listen({

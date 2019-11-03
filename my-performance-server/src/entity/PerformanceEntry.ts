@@ -8,6 +8,8 @@ import {
 
 @Entity()
 export default class PerformanceEntry extends BaseEntity {
+  static TYPE_NAME = 'PerformanceEntry';
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
