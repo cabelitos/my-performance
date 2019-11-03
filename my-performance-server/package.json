@@ -5,6 +5,9 @@
    "description": "My performance server",
    "license": "MIT",
    "devDependencies": {
+      "@graphql-codegen/cli": "^1.8.2",
+      "@graphql-codegen/typescript": "1.8.2",
+      "@types/lodash.merge": "^4.6.6",
       "@types/node": "^12.12.0",
       "@typescript-eslint/eslint-plugin": "^2.6.0",
       "@typescript-eslint/parser": "^2.6.0",
@@ -26,6 +29,7 @@
       "cross-env": "^6.0.3",
       "dotenv-flow": "^3.1.0",
       "graphql": "^14.5.8",
+      "lodash.merge": "^4.6.2",
       "pg": "^7.12.1",
       "reflect-metadata": "^0.1.13",
       "typeorm": "0.2.20"
@@ -37,6 +41,7 @@
       "docker:build": "docker-compose build",
       "docker:up": "cross-env NODE_ENV=production docker-compose up",
       "fixtures": "node -r dotenv-flow/config ./node_modules/.bin/fixtures ./src/fixtures --config ormconfig.json --sync",
-      "run-fixtures": "run-s build fixtures"
+      "run-fixtures": "run-s build fixtures",
+      "codegen": "graphql-codegen --config codegen.yml"
    }
 }
