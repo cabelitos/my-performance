@@ -10,7 +10,7 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 
-import { DateFilter } from '../generated/graphql';
+import { DateFilter, CreatePerformanceEntryInput } from '../generated/graphql';
 
 export interface PerformanceEntryRange {
   totalCount: number; // total count for a given user (all data in the DB)
@@ -39,6 +39,15 @@ export default class PerformanceEntry extends BaseEntity {
 
   @Column({ type: 'timestamp with time zone', unique: true })
   date: Date;
+
+  static async make(
+    input: CreatePerformanceEntryInput,
+    userId: string,
+  ): Promise<PerformanceEntry> {
+    const entry = new PerformanceEntry();
+    Object.assign(entry, input, { userId });
+    return entry.save();
+  }
 
   static setupDateClause(
     query: SelectQueryBuilder<PerformanceEntry>,

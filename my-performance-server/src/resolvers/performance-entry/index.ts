@@ -3,6 +3,8 @@ import toGraphQl from '../../utils/perf-to-graph-type';
 import {
   QueryPerformanceEntriesArgs,
   PerformanceEntriesPayload,
+  PerformanceEntry,
+  MutationCreatePerformanceEntryArgs,
 } from '../../generated/graphql';
 import { ApolloContext } from '../../common-types/apollo-context';
 
@@ -26,5 +28,13 @@ export default {
         entries: entries.map(toGraphQl),
       };
     },
+  },
+  Mutation: {
+    createPerformanceEntry: async (
+      _: unknown,
+      { input }: MutationCreatePerformanceEntryArgs,
+      { userId }: ApolloContext,
+    ): Promise<PerformanceEntry> =>
+      toGraphQl(await PerformanceEntryEntity.make(input, userId)),
   },
 };
