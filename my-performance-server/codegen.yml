@@ -3,7 +3,7 @@ schema: "./src/schemas/index.ts"
 documents: null
 config:
   scalars:
-    Date: string
+    Date: Date
   nonOptionalTypename: false
 generates:
   src/generated/graphql.ts:

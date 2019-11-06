@@ -10,10 +10,9 @@ export default {
   Query: {
     performanceEntries: async (
       _: unknown,
-      { date: scalarDate, filterBy, first, skip }: QueryPerformanceEntriesArgs,
+      { date, filterBy, first, skip }: QueryPerformanceEntriesArgs,
       { userId }: ApolloContext,
     ): Promise<PerformanceEntriesPayload> => {
-      const date = new Date(scalarDate);
       const { totalCount, entries } = await PerformanceEntryEntity.inRange(
         userId,
         date,
