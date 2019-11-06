@@ -10,7 +10,11 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 
-import { DateFilter, CreatePerformanceEntryInput } from '../generated/graphql';
+import {
+  DateFilter,
+  CreatePerformanceEntryInput,
+  QueryPerformanceEntriesArgs,
+} from '../generated/graphql';
 
 export interface PerformanceEntryRange {
   totalCount: number; // total count for a given user (all data in the DB)
@@ -78,11 +82,8 @@ export default class PerformanceEntry extends BaseEntity {
   }
 
   static inRange(
+    { date, filterBy, first, skip }: QueryPerformanceEntriesArgs,
     userId: string,
-    date: Date,
-    filterBy: DateFilter,
-    first: number | undefined,
-    skip: number | undefined,
   ): Promise<PerformanceEntryRange> {
     return getManager().transaction(
       async (manager: EntityManager): Promise<PerformanceEntryRange> => {

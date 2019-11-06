@@ -12,17 +12,13 @@ export default {
   Query: {
     performanceEntries: async (
       _: unknown,
-      { date, filterBy, first, skip }: QueryPerformanceEntriesArgs,
+      input: QueryPerformanceEntriesArgs,
       { userId }: ApolloContext,
     ): Promise<PerformanceEntriesPayload> => {
       const { totalCount, entries } = await PerformanceEntryEntity.inRange(
+        input,
         userId,
-        date,
-        filterBy,
-        first,
-        skip,
       );
-
       return {
         totalCount,
         entries: entries.map(toGraphQl),
