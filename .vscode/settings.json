@@ -1,0 +1,6 @@
+{
+  "eslint.workingDirectories": [
+  "./my-performance-client",
+  "./my-performance-server"
+  ]
+}
