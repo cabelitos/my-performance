@@ -8,22 +8,25 @@ import theme from './theme';
 import routes from './routes';
 import AuthProvider from './auth';
 import PrivateRoute from './components/PrivateRoute';
+import ApolloContext from './graphql/context';
 
 const App = (): JSX.Element => (
   <ThemeProvider theme={theme}>
     <BrowserRouter>
       <AuthProvider>
-        <CssBaseline />
-        <Switch>
-          {routes.map(
-            ({ isPrivate, ...rest }): JSX.Element =>
-              isPrivate ? (
-                <PrivateRoute {...rest} key={rest.path} />
-              ) : (
-                <Route {...rest} key={rest.path} />
-              ),
-          )}
-        </Switch>
+        <ApolloContext>
+          <CssBaseline />
+          <Switch>
+            {routes.map(
+              ({ isPrivate, ...rest }): JSX.Element =>
+                isPrivate ? (
+                  <PrivateRoute {...rest} key={rest.path} />
+                ) : (
+                  <Route {...rest} key={rest.path} />
+                ),
+            )}
+          </Switch>
+        </ApolloContext>
       </AuthProvider>
     </BrowserRouter>
   </ThemeProvider>

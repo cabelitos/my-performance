@@ -20,6 +20,7 @@ interface Context {
   isAuthenticated: boolean;
   loading: boolean;
   loginWithRedirect(args?: LoginArgs): Promise<void>;
+  getToken(): Promise<string>;
   logout(): void;
 }
 const onRedirectCallback = (
@@ -37,6 +38,7 @@ const AuthContext = React.createContext({
   isAuthenticated: false,
   loading: false,
   loginWithRedirect: () => Promise.resolve(),
+  getToken: () => Promise.resolve(''),
   logout: () => {},
 });
 
@@ -109,6 +111,12 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
       },
       logout: (): void => {
         if (auth0Client) auth0Client.logout();
+      },
+      getToken: (): Promise<string> => {
+        if (!auth0Client) {
+          throw new Error('');
+        }
+        return auth0Client.getTokenSilently();
       },
     }),
     [isAuthenticated, loading, auth0Client],
