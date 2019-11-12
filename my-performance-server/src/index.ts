@@ -1,9 +1,11 @@
 import 'reflect-metadata';
 import { createConnection, getConnectionOptions } from 'typeorm';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer, AuthenticationError } from 'apollo-server';
 
 import typeDefs from './schemas';
 import resolvers from './resolvers';
+import auth from './auth';
+import { ApolloContext } from './common-types/apollo-context';
 
 const start = async (): Promise<void> => {
   const connectionOptions = await getConnectionOptions();
@@ -15,10 +17,15 @@ const start = async (): Promise<void> => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: {
-      db,
-      // FIXME: get from auth0
-      userId: 'user1@gmail.com',
+    context: async ({ req: { headers } }): Promise<ApolloContext> => {
+      if (!headers) {
+        throw new AuthenticationError('Authentication headers missing');
+      }
+      const userId = await auth.getUserIdFromToken(headers.authorization);
+      if (!userId) {
+        throw new AuthenticationError('Missing user');
+      }
+      return { db, userId };
     },
   });
   const { url } = await server.listen({
