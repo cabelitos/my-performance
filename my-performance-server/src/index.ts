@@ -1,12 +1,9 @@
 import 'reflect-metadata';
-import dotenv from 'dotenv-flow';
 import { createConnection, getConnectionOptions } from 'typeorm';
 import { ApolloServer } from 'apollo-server';
 
 import typeDefs from './schemas';
 import resolvers from './resolvers';
-
-dotenv.config();
 
 const start = async (): Promise<void> => {
   const connectionOptions = await getConnectionOptions();

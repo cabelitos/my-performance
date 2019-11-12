@@ -29,4 +29,4 @@ PATH=$(npm bin):$PATH
 # Wait for MySQL is up and running
 # wait4psql --username=${POSTGRES_USER} --password=${POSTGRES_PASSWORD_FILE} -h postgres -D ${POSTGRES_DB} --quiet
 
-exec node build/index.js "$@"
+exec node -r dotenv-flow/config build/index.js "$@"
