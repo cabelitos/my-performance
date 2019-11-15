@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 import theme from './theme';
 import routes from './routes';
@@ -15,17 +17,19 @@ const App = (): JSX.Element => (
     <BrowserRouter>
       <AuthProvider>
         <ApolloContext>
-          <CssBaseline />
-          <Switch>
-            {routes.map(
-              ({ isPrivate, ...rest }): JSX.Element =>
-                isPrivate ? (
-                  <PrivateRoute {...rest} key={rest.path} />
-                ) : (
-                  <Route {...rest} key={rest.path} />
-                ),
-            )}
-          </Switch>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <CssBaseline />
+            <Switch>
+              {routes.map(
+                ({ isPrivate, ...rest }): JSX.Element =>
+                  isPrivate ? (
+                    <PrivateRoute {...rest} key={rest.path} />
+                  ) : (
+                    <Route {...rest} key={rest.path} />
+                  ),
+              )}
+            </Switch>
+          </MuiPickersUtilsProvider>
         </ApolloContext>
       </AuthProvider>
     </BrowserRouter>

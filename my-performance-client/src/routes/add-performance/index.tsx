@@ -6,14 +6,17 @@ import Typography from '@material-ui/core/Typography';
 
 import FormSchemas from '../../schema/forms';
 import FormInputText from '../../components/FormInputText';
+import FormDateTimeInput, {
+  DateTimeInputType,
+} from '../../components/FormDateTimeInput';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(0, 4),
     display: 'flex',
     width: '100%',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
     flex: 1,
     flexDirection: 'column',
   },
@@ -21,7 +24,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     textAlign: 'center',
     marginBottom: theme.spacing(2),
   },
-  textField: {
+  btn: {
+    alignSelf: 'center',
+  },
+  spacer: {
     marginBottom: theme.spacing(4),
   },
 }));
@@ -30,21 +36,36 @@ interface FormValues {
   calories: string;
   distance: string;
   energy: string;
-  date: string;
+  date: Date;
+  time: Date;
 }
 
-const initialValues = {
-  calories: '',
-  date: '',
-  distance: '',
-  energy: '',
+const Constants = {
+  dummyValues: {
+    calories: '',
+    distance: '',
+    energy: '',
+    date: '',
+    time: '',
+  },
+  dateKeyboardButtonProps: { 'aria-label': 'Change date' },
+  timeKeyboardButtonProps: { 'aria-label': 'Change time' },
 };
 
 const AddPerformance = (): JSX.Element => {
   const styles = useStyles();
+  const initialValues = React.useMemo(
+    (): FormValues => ({
+      ...Constants.dummyValues,
+      date: new Date(),
+      time: new Date(),
+    }),
+    [],
+  );
+  const onSubmit = React.useCallback((): void => {}, []);
   return (
     <Formik
-      onSubmit={(): void => {}}
+      onSubmit={onSubmit}
       initialValues={initialValues}
       validationSchema={FormSchemas.performanceEntry}
     >
@@ -62,21 +83,45 @@ const AddPerformance = (): JSX.Element => {
             required
             name="calories"
             label="Calories"
-            className={styles.textField}
+            className={styles.spacer}
           />
           <FormInputText
             required
             label="Distance"
             name="distance"
-            className={styles.textField}
+            className={styles.spacer}
           />
           <FormInputText
             required
             name="energy"
             label="Energy"
-            className={styles.textField}
+            className={styles.spacer}
           />
-          <Button variant="contained" color="primary" type="submit">
+          <FormDateTimeInput
+            className={styles.spacer}
+            name="date"
+            disableFuture
+            type={DateTimeInputType.date}
+            margin="normal"
+            label="Class date"
+            format="dd/MM/yyyy"
+            KeyboardButtonProps={Constants.dateKeyboardButtonProps}
+          />
+          <FormDateTimeInput
+            className={styles.spacer}
+            type={DateTimeInputType.time}
+            margin="normal"
+            ampm={false}
+            label="Class time"
+            KeyboardButtonProps={Constants.timeKeyboardButtonProps}
+            name="time"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            className={styles.btn}
+          >
             Save
           </Button>
         </form>
