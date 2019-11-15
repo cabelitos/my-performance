@@ -1,37 +1,91 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
+import { Link, Switch, RouteComponentProps } from 'react-router-dom';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import AddCircle from '@material-ui/icons/AddCircle';
+import BarChart from '@material-ui/icons/BarChart';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
-import { useAuth } from '../../auth';
+import AddPerformance from '../add-performance';
+import Charts from '../charts';
+import Profile from '../profile';
+import routeNames from '../routeNames';
+import PrivateRoute from '../../components/PrivateRoute';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
+  bottomBar: {
+    background: theme.palette.primary.light,
+  },
   root: {
-    alignItems: 'center',
-    background: theme.palette.primary.main,
     display: 'flex',
-    justifyContent: 'center',
     flexDirection: 'column',
     height: '100vh',
-    maxWidth: '100vw',
+    width: '100vw',
   },
-  title: {
-    marginBottom: theme.spacing(8),
+  routeContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    width: '100%',
+    overflowY: 'scroll',
+    minHeight: 0,
+    '-webkit-overflow-scrolling': 'touch',
   },
 }));
 
-const Dashboard = (): JSX.Element => {
+const Dashboard = ({
+  match: { url, path },
+}: RouteComponentProps): JSX.Element => {
   const styles = useStyles();
-  const { logout } = useAuth();
-  const onLogout = React.useCallback((): void => {
-    logout();
-  }, [logout]);
+  const [selectedTab, setSelectedTab] = React.useState(1);
+  const onSelectedTabChanged = React.useCallback(
+    (_: unknown, newTab: number): void => {
+      setSelectedTab(newTab);
+    },
+    [],
+  );
   return (
-    <Container className={styles.root}>
-      <Button variant="contained" color="secondary" onClick={onLogout}>
-        Logout
-      </Button>
-    </Container>
+    <div className={styles.root}>
+      <div className={styles.routeContainer}>
+        <Switch>
+          <PrivateRoute
+            path={`${path}${routeNames.profile}`}
+            component={Profile}
+          />
+          <PrivateRoute
+            path={`${path}${routeNames.add}`}
+            component={AddPerformance}
+          />
+          <PrivateRoute component={Charts} />
+        </Switch>
+      </div>
+      <BottomNavigation
+        value={selectedTab}
+        onChange={onSelectedTabChanged}
+        showLabels
+        className={styles.bottomBar}
+      >
+        <BottomNavigationAction
+          component={Link}
+          label="Add"
+          to={`${url}${routeNames.add}`}
+          icon={<AddCircle />}
+        />
+        <BottomNavigationAction
+          component={Link}
+          label="Charts"
+          to={url}
+          icon={<BarChart />}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to={`${url}${routeNames.profile}`}
+          label="Profile"
+          icon={<AccountCircle />}
+        />
+      </BottomNavigation>
+    </div>
   );
 };
 
