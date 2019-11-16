@@ -3,12 +3,15 @@ import { Formik, FormikProps } from 'formik';
 import Button from '@material-ui/core/Button';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { set as setDate } from 'date-fns';
 
 import FormSchemas from '../../schema/forms';
 import FormInputText from '../../components/FormInputText';
 import FormDateTimeInput, {
   DateTimeInputType,
 } from '../../components/FormDateTimeInput';
+import useAddPerformanceEntry from '../../graphql/add-performance';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -26,9 +29,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   btn: {
     alignSelf: 'center',
+    marginBottom: theme.spacing(2),
   },
   spacer: {
     marginBottom: theme.spacing(4),
+  },
+  progressContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -62,14 +73,40 @@ const AddPerformance = (): JSX.Element => {
     }),
     [],
   );
-  const onSubmit = React.useCallback((): void => {}, []);
+  const [addPerformanceEntry] = useAddPerformanceEntry();
+  const onSubmit = React.useCallback(
+    ({
+      calories,
+      distance,
+      energy,
+      date,
+      time,
+    }: FormValues): ReturnType<typeof addPerformanceEntry> =>
+      addPerformanceEntry({
+        variables: {
+          input: {
+            date: setDate(new Date(date), {
+              hours: time.getHours(),
+              minutes: time.getMinutes(),
+            }).toISOString(),
+            calories: parseInt(calories, 10),
+            distance: parseInt(distance, 10),
+            energy: parseInt(energy, 10),
+          },
+        },
+      }),
+    [addPerformanceEntry],
+  );
   return (
     <Formik
       onSubmit={onSubmit}
       initialValues={initialValues}
       validationSchema={FormSchemas.performanceEntry}
     >
-      {({ handleSubmit }: FormikProps<FormValues>): JSX.Element => (
+      {({
+        handleSubmit,
+        isSubmitting,
+      }: FormikProps<FormValues>): JSX.Element => (
         <form
           onSubmit={handleSubmit}
           className={styles.root}
@@ -116,14 +153,20 @@ const AddPerformance = (): JSX.Element => {
             KeyboardButtonProps={Constants.timeKeyboardButtonProps}
             name="time"
           />
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            className={styles.btn}
-          >
-            Save
-          </Button>
+          {isSubmitting ? (
+            <div className={styles.progressContainer}>
+              <CircularProgress color="primary" />
+            </div>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              className={styles.btn}
+            >
+              Save
+            </Button>
+          )}
         </form>
       )}
     </Formik>
