@@ -12,6 +12,7 @@ import FormDateTimeInput, {
   DateTimeInputType,
 } from '../../components/FormDateTimeInput';
 import useAddPerformanceEntry from '../../graphql/add-performance';
+import useShowSnackBar from '../../hooks/useShowSnackBar';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -73,7 +74,8 @@ const AddPerformance = (): JSX.Element => {
     }),
     [],
   );
-  const [addPerformanceEntry] = useAddPerformanceEntry();
+  const [addPerformanceEntry, { data, error }] = useAddPerformanceEntry();
+  useShowSnackBar('Performance entry saved', !!data, error);
   const onSubmit = React.useCallback(
     ({
       calories,
