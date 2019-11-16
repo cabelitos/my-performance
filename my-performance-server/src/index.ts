@@ -1,8 +1,9 @@
 import 'reflect-metadata';
+import path from 'path';
 import { createConnection, getConnectionOptions } from 'typeorm';
 import { ApolloServer, AuthenticationError } from 'apollo-server';
+import { importSchema } from 'graphql-import';
 
-import typeDefs from './schemas';
 import resolvers from './resolvers';
 import auth from './auth';
 import { ApolloContext } from './common-types/apollo-context';
@@ -15,7 +16,7 @@ const start = async (): Promise<void> => {
     }),
   );
   const server = new ApolloServer({
-    typeDefs,
+    typeDefs: importSchema(path.join(__dirname, 'schemas', 'schema.graphql')),
     resolvers,
     context: async ({ req: { headers } }): Promise<ApolloContext> => {
       if (!headers) {

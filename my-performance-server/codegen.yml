@@ -1,5 +1,5 @@
 overwrite: true
-schema: "./src/schemas/index.ts"
+schema: "./src/schemas/schema.graphql"
 documents: null
 config:
   scalars:
