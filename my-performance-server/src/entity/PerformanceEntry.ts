@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 
 import {
-  DateFilter,
   CreatePerformanceEntryInput,
   QueryPerformanceEntriesArgs,
 } from '../generated/graphql';
@@ -55,34 +54,34 @@ export default class PerformanceEntry extends BaseEntity {
 
   static setupDateClause(
     query: SelectQueryBuilder<PerformanceEntry>,
-    date: Date,
-    filterBy: DateFilter,
+    start: Date | null | undefined,
+    end: Date | null | undefined,
   ): SelectQueryBuilder<PerformanceEntry> {
+    // Give me everything
+    if (!start && !end) {
+      return query;
+    }
+
     let ret = query;
-    switch (filterBy) {
-      case DateFilter.EqualDay:
-        ret = ret.andWhere('EXTRACT(DAY FROM performance_entry.date) = :day', {
-          day: date.getDate(),
-        });
-      case DateFilter.EqualMonth:
-        ret = ret.andWhere(
-          'EXTRACT(MONTH FROM performance_entry.date) = :month',
-          { month: date.getMonth() + 1 },
-        );
-      case DateFilter.EqualYear:
-        ret = ret.andWhere(
-          'EXTRACT(YEAR FROM performance_entry.date) = :year',
-          { year: date.getFullYear() },
-        );
-        break;
-      default:
-        throw new Error(`Unknown filter - ${filterBy}`);
+    if (start) {
+      ret = ret.andWhere(
+        "DATE_TRUNC('day', performance_entry.date) >= :start",
+        {
+          start,
+        },
+      );
+    }
+    if (end) {
+      // only end date provided
+      ret = ret.andWhere("DATE_TRUNC('day', performance_entry.date) <= :end", {
+        end,
+      });
     }
     return ret;
   }
 
   static inRange(
-    { date, filterBy, first, skip }: QueryPerformanceEntriesArgs,
+    { start, end, first, skip }: QueryPerformanceEntriesArgs,
     userId: string,
   ): Promise<PerformanceEntryRange> {
     return getManager().transaction(
@@ -91,8 +90,8 @@ export default class PerformanceEntry extends BaseEntity {
           manager
             .createQueryBuilder(PerformanceEntry, 'performance_entry')
             .where('performance_entry.userId = :userId', { userId }),
-          date,
-          filterBy,
+          start,
+          end,
         ).getCount();
         if (!totalCount) {
           return {
@@ -104,8 +103,8 @@ export default class PerformanceEntry extends BaseEntity {
           manager
             .createQueryBuilder(PerformanceEntry, 'performance_entry')
             .where('performance_entry.userId = :userId', { userId }),
-          date,
-          filterBy,
+          start,
+          end,
         )
           .orderBy({
             'performance_entry.date': 'DESC',

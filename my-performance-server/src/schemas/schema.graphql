@@ -16,12 +16,6 @@ type PerformanceEntriesPayload {
   entries: [PerformanceEntry!]!
 }
 
-enum DateFilter {
-  EQUAL_DAY
-  EQUAL_YEAR
-  EQUAL_MONTH
-}
-
 input CreatePerformanceEntryInput {
   distance: Int!
   energy: Int!
@@ -32,8 +26,8 @@ input CreatePerformanceEntryInput {
 type Query {
   node(id: ID!): Node
   performanceEntries(
-    date: Date!
-    filterBy: DateFilter!
+    start: Date
+    end: Date
     first: Int
     skip: Int
   ): PerformanceEntriesPayload!

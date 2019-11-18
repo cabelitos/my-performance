@@ -17,12 +17,6 @@ export type CreatePerformanceEntryInput = {
 };
 
 
-export enum DateFilter {
-  EqualDay = 'EQUAL_DAY',
-  EqualYear = 'EQUAL_YEAR',
-  EqualMonth = 'EQUAL_MONTH'
-}
-
 export type Mutation = {
    __typename?: 'Mutation',
   createPerformanceEntry: PerformanceEntry,
@@ -65,8 +59,8 @@ export type QueryNodeArgs = {
 
 
 export type QueryPerformanceEntriesArgs = {
-  date: Scalars['Date'],
-  filterBy: DateFilter,
+  start?: Maybe<Scalars['Date']>,
+  end?: Maybe<Scalars['Date']>,
   first?: Maybe<Scalars['Int']>,
   skip?: Maybe<Scalars['Int']>
 };
