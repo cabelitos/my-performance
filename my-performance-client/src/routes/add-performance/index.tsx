@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikProps, FormikHelpers } from 'formik';
 import Button from '@material-ui/core/Button';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -77,14 +77,11 @@ const AddPerformance = (): JSX.Element => {
   const [addPerformanceEntry, { data, error }] = useAddPerformanceEntry();
   useShowSnackBar('Performance entry saved', !!data, error);
   const onSubmit = React.useCallback(
-    ({
-      calories,
-      distance,
-      energy,
-      date,
-      time,
-    }: FormValues): ReturnType<typeof addPerformanceEntry> =>
-      addPerformanceEntry({
+    async (
+      { calories, distance, energy, date, time }: FormValues,
+      { resetForm }: FormikHelpers<FormValues>,
+    ): Promise<void> => {
+      await addPerformanceEntry({
         variables: {
           input: {
             date: setDate(new Date(date), {
@@ -96,7 +93,9 @@ const AddPerformance = (): JSX.Element => {
             energy: parseInt(energy, 10),
           },
         },
-      }),
+      });
+      resetForm();
+    },
     [addPerformanceEntry],
   );
   return (
