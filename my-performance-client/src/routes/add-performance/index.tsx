@@ -16,7 +16,6 @@ import useShowSnackBar from '../../hooks/useShowSnackBar';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: theme.spacing(0, 4),
     display: 'flex',
     width: '100%',
     justifyContent: 'center',
@@ -30,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   btn: {
     alignSelf: 'center',
-    marginBottom: theme.spacing(2),
   },
   spacer: {
     marginBottom: theme.spacing(4),
@@ -40,7 +38,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     width: '100%',
     alignItems: 'center',
-    marginBottom: theme.spacing(2),
   },
 }));
 

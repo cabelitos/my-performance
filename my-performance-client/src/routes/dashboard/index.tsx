@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   routeContainer: {
     display: 'flex',
     flexDirection: 'column',
+    padding: theme.spacing(2, 4),
     flex: 1,
     width: '100%',
     overflowY: 'scroll',
