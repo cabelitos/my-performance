@@ -20,11 +20,17 @@ export type CreatePerformanceEntryInput = {
 export type Mutation = {
    __typename?: 'Mutation',
   createPerformanceEntry: PerformanceEntry,
+  deletePerformanceEntry: Scalars['ID'],
 };
 
 
 export type MutationCreatePerformanceEntryArgs = {
   input: CreatePerformanceEntryInput
+};
+
+
+export type MutationDeletePerformanceEntryArgs = {
+  id: Scalars['ID']
 };
 
 export type Node = {

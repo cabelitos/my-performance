@@ -35,4 +35,5 @@ type Query {
 
 type Mutation {
   createPerformanceEntry(input: CreatePerformanceEntryInput!): PerformanceEntry!
+  deletePerformanceEntry(id: ID!): ID!
 }
