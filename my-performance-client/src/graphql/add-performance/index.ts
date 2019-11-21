@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import {
   useMutation,
   MutationTuple,
@@ -9,6 +10,8 @@ import {
   CreatePerformanceEntryMutation,
   CreatePerformanceEntryMutationVariables,
 } from './__generated__/CreatePerformanceEntryMutation';
+
+import { addPerformanceEntryToCache } from '../get-performance-entries';
 
 const mutation = gql`
   mutation CreatePerformanceEntryMutation(
@@ -24,6 +27,15 @@ const mutation = gql`
   }
 `;
 
+const update = (
+  cache: unknown,
+  {
+    data: { createPerformanceEntry },
+  }: { data: CreatePerformanceEntryMutation },
+): void => {
+  addPerformanceEntryToCache(cache, createPerformanceEntry);
+};
+
 const useAddPerformanceEntry = (
   options?: MutationHookOptions<
     CreatePerformanceEntryMutation,
@@ -32,6 +44,7 @@ const useAddPerformanceEntry = (
 ): MutationTuple<
   CreatePerformanceEntryMutation,
   CreatePerformanceEntryMutationVariables
-> => useMutation(mutation, options);
+  // @ts-ignore
+> => useMutation(mutation, { ...options, update });
 
 export default useAddPerformanceEntry;
