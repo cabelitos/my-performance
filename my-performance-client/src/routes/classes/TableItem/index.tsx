@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import useDeletePerformanceEntry from '../../../graphql/delete-performance';
 import useShowSnackBar from '../../../hooks/useShowSnackBar';
+import useSuccessSnackMessage from '../../../hooks/useSucessSnackMessage';
 
 interface Props {
   children: React.ReactNode;
@@ -52,8 +53,9 @@ const TableHeader = ({
   onCloseOpenDialog,
 }: Props): JSX.Element => {
   const styles = useStyles();
-  const [deleteEntry, { data, error, loading }] = useDeletePerformanceEntry();
-  useShowSnackBar('Performance entry deleted', !!data, error);
+  const [deleteEntry, { error, loading }] = useDeletePerformanceEntry();
+  useShowSnackBar(undefined, undefined, error);
+  const postSuccessMessage = useSuccessSnackMessage();
   const onDeleteClicked = React.useCallback((): void => {
     if (!id || !onCloseOpenDialog) return;
     onCloseOpenDialog((): void => {
@@ -61,9 +63,11 @@ const TableHeader = ({
         variables: {
           id,
         },
+      }).then((): void => {
+        postSuccessMessage('Performance entry deleted');
       });
     });
-  }, [deleteEntry, id, onCloseOpenDialog]);
+  }, [deleteEntry, id, onCloseOpenDialog, postSuccessMessage]);
   let content;
   if (isDelete) {
     content = (
