@@ -19,6 +19,5 @@ export default {
     distance: numberValidator('Distance'),
     energy: numberValidator('Energy'),
     date: dateValidator('Date'),
-    time: dateValidator('Time'),
   }),
 };
