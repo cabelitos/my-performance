@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  my-performance-client:
+    build: .
+    restart: always
+    networks:
+      - my-performance-client
+    expose:
+      - "80"
+
+networks:
+  my-performance-client:
+    external: true
+

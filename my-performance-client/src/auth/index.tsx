@@ -53,6 +53,11 @@ const AuthContext = React.createContext<Context>({
 
 export const useAuth = (): Context => React.useContext(AuthContext);
 
+const redirectUri =
+  process.env.NODE_ENV === 'production'
+    ? `${window.location.origin}/my-performance`
+    : window.location.origin;
+
 const AuthProvider = ({ children }: Props): JSX.Element => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [auth0Client, setAuth0] = React.useState();
@@ -71,7 +76,7 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
           audience: process.env.REACT_APP_AUTH0_AUDIENCE,
           client_id: process.env.REACT_APP_AUTH0_CLIENT_ID || '',
           domain: process.env.REACT_APP_AUTH0_DOMAIN || '',
-          redirect_uri: window.location.origin,
+          redirect_uri: redirectUri,
         });
 
         if (!isMounted.current) return;
@@ -128,7 +133,11 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
         }
       },
       logout: (): void => {
-        if (auth0Client) auth0Client.logout();
+        if (auth0Client) {
+          auth0Client.logout({
+            returnTo: redirectUri,
+          });
+        }
       },
       getToken: (): Promise<string> => {
         if (!auth0Client) {

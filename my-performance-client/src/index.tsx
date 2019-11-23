@@ -41,7 +41,11 @@ const App = (): JSX.Element => {
         maxSnack={3}
         anchorOrigin={anchorOrigin}
       >
-        <BrowserRouter>
+        <BrowserRouter
+          basename={
+            process.env.NODE_ENV === 'production' ? 'my-performance' : undefined
+          }
+        >
           <AuthProvider>
             <ApolloContext>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
