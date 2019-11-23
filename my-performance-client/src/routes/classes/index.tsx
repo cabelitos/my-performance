@@ -13,6 +13,7 @@ import { format as formatDate } from 'date-fns';
 import useGetPerformanceEntries from '../../graphql/get-performance-entries';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import ErrorView from '../../components/ErrorView';
+import Dialog from '../../components/Dialog';
 import TableItem, { Constants as TableItemConstants } from './TableItem';
 
 const useStyles = makeStyles(() => ({
@@ -77,9 +78,9 @@ const columns: ColumnEntry[] = [
 
 const headerRenderer = ({
   label,
-  columnData,
+  columnData: { isFirst },
 }: TableHeaderProps): JSX.Element => (
-  <TableItem isHeader isFirst={columnData}>
+  <TableItem isHeader isFirst={isFirst}>
     {label}
   </TableItem>
 );
@@ -87,12 +88,13 @@ const headerRenderer = ({
 const cellRenderer = ({
   cellData,
   dataKey,
-  columnData,
+  columnData: { isFirst, onCloseOpenDialog },
 }: TableCellProps): JSX.Element => (
   <TableItem
     isHeader={false}
     id={dataKey === ColumnEntryKeys.delete ? cellData : undefined}
-    isFirst={columnData}
+    isFirst={isFirst}
+    onCloseOpenDialog={onCloseOpenDialog}
     isDelete={dataKey === ColumnEntryKeys.delete}
   >
     {cellData}
@@ -112,21 +114,47 @@ const cellDataGetter = ({
   return rowData[dataKey];
 };
 
-const isFirst = { isFirst: true };
+type Function = () => void;
 
 const Classes = (): JSX.Element => {
   const styles = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const { loading, error, refetch, data } = useGetPerformanceEntries(
     queryOptions,
   );
+  const deleteItemCb = React.useRef<Function | null>(null);
   const onRetry = React.useCallback((): void => {
     refetch();
   }, [refetch]);
+
+  const onCloseDialog = React.useCallback((): void => {
+    setIsDialogOpen(false);
+    deleteItemCb.current = null;
+  }, []);
 
   const rowGetter = React.useCallback(
     ({ index }: { index: number }) =>
       data ? data.performanceEntries.entries[index] : null,
     [data],
+  );
+
+  const onCloseOpenDialog = React.useCallback((deleteItem: Function): void => {
+    setIsDialogOpen(true);
+    deleteItemCb.current = deleteItem;
+  }, []);
+
+  const onAgree = React.useCallback(() => {
+    setIsDialogOpen(false);
+    if (deleteItemCb.current) deleteItemCb.current();
+    deleteItemCb.current = null;
+  }, []);
+
+  const { firstItemColumnData, itemColumnData } = React.useMemo(
+    () => ({
+      firstItemColumnData: { isFirst: true, onCloseOpenDialog },
+      itemColumnData: { isFirst: false, onCloseOpenDialog },
+    }),
+    [onCloseOpenDialog],
   );
 
   if (loading) {
@@ -143,6 +171,14 @@ const Classes = (): JSX.Element => {
 
   return (
     <div className={styles.container}>
+      <Dialog
+        onAgree={onAgree}
+        onDisagree={onCloseDialog}
+        isOpen={isDialogOpen}
+        title="Delete Class data"
+        subTitle="Are you sure you want to delete?"
+        onClose={onCloseDialog}
+      />
       <AutoSizer>
         {({ height, width }): JSX.Element => (
           <Table
@@ -159,7 +195,7 @@ const Classes = (): JSX.Element => {
                 <Column
                   disableSort
                   className={styles.flexContainer}
-                  columnData={!i ? isFirst : undefined}
+                  columnData={!i ? firstItemColumnData : itemColumnData}
                   label={label}
                   key={dataKey}
                   width={width / columns.length}

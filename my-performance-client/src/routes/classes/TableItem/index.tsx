@@ -10,11 +10,12 @@ import useDeletePerformanceEntry from '../../../graphql/delete-performance';
 import useShowSnackBar from '../../../hooks/useShowSnackBar';
 
 interface Props {
+  children: React.ReactNode;
+  id?: string;
+  isDelete?: boolean;
   isFirst: boolean;
   isHeader: boolean;
-  isDelete?: boolean;
-  id?: string;
-  children: React.ReactNode;
+  onCloseOpenDialog?(cb: () => void): void;
 }
 
 export const Constants = {
@@ -38,23 +39,26 @@ const useStyles = makeStyles(() => ({
 }));
 
 const TableHeader = ({
+  children,
+  id,
+  isDelete,
   isFirst,
   isHeader,
-  children,
-  isDelete,
-  id,
+  onCloseOpenDialog,
 }: Props): JSX.Element => {
   const styles = useStyles();
   const [deleteEntry, { data, error, loading }] = useDeletePerformanceEntry();
   useShowSnackBar('Performance entry deleted', !!data, error);
   const onDeleteClicked = React.useCallback((): void => {
-    if (!id) return;
-    deleteEntry({
-      variables: {
-        id,
-      },
+    if (!id || !onCloseOpenDialog) return;
+    onCloseOpenDialog((): void => {
+      deleteEntry({
+        variables: {
+          id,
+        },
+      });
     });
-  }, [deleteEntry, id]);
+  }, [deleteEntry, id, onCloseOpenDialog]);
   let content;
   if (isDelete) {
     content = (
