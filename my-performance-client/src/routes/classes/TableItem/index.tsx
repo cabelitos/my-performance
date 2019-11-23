@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -23,7 +23,7 @@ export const Constants = {
   itemHeight: 100,
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   common: {
     flex: 1,
     display: 'flex',
@@ -35,6 +35,11 @@ const useStyles = makeStyles(() => ({
   },
   bodyItem: {
     height: Constants.itemHeight,
+  },
+  text: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 9,
+    },
   },
 }));
 
@@ -68,7 +73,9 @@ const TableHeader = ({
     );
   } else {
     content = (
-      <Typography variant={isHeader ? 'h6' : 'body1'}>{children}</Typography>
+      <Typography variant={isHeader ? 'h6' : 'body1'} className={styles.text}>
+        {children}
+      </Typography>
     );
   }
   return (

@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowY: 'scroll',
     minHeight: 0,
     '-webkit-overflow-scrolling': 'touch',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2, 0),
+    },
   },
 }));
 
