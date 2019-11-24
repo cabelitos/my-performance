@@ -6,7 +6,7 @@ RUN yarn install > /dev/null
 
 COPY ./utils/docker/entrypoint.sh /entrypoint.sh
 COPY . ./
-COPY ./src/schemas ./build/schemas
+COPY ./src/schemas ./build/src/schemas
 RUN yarn build
 
 EXPOSE 3000

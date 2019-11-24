@@ -23,7 +23,8 @@
       "prettier-eslint": "^9.0.0",
       "ts-node": "8.4.1",
       "typeorm-fixtures-cli": "^1.3.7",
-      "typescript": "3.6.4"
+      "typescript": "3.6.4",
+      "wait-for-postgres": "^1.5.3"
    },
    "dependencies": {
       "apollo-server": "^2.9.7",
@@ -43,11 +44,14 @@
       "build": "cross-env NODE_ENV=production tsc -p tsconfig.json",
       "lint": "tsc --noEmit && eslint '*/**/*.{js,ts}'",
       "docker:build:dev": "docker-compose build",
-      "docker:up:dev": "cross-env NODE_ENV=production docker-compose up -d",
+      "docker:up:dev": "cross-env NODE_ENV=production docker-compose up",
       "docker:build:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml build",
-      "docker:up:prod": "cross-env NODE_ENV=production docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+      "docker:up:prod": "cross-env NODE_ENV=production docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
       "fixtures": "node -r dotenv-flow/config ./node_modules/.bin/fixtures ./src/fixtures --config ormconfig.json --sync",
       "run-fixtures": "run-s build fixtures",
-      "codegen": "graphql-codegen --config codegen.yml"
+      "codegen": "graphql-codegen --config codegen.yml",
+      "generate-migrations": "cross-env NODE_ENV=development ts-node -r dotenv-flow/config ./node_modules/.bin/typeorm migration:generate -n AutoMigrate",
+      "run-migrations:dev": "cross-env NODE_ENV=development ts-node -r dotenv-flow/config ./node_modules/.bin/typeorm migration:run",
+      "run-migrations:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config ./node_modules/.bin/typeorm migration:run"
    }
 }

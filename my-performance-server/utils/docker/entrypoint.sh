@@ -26,7 +26,8 @@ file_env TYPEORM_PASSWORD
 # Add npm bin directory to PATH in order to run wait4mysql
 PATH=$(npm bin):$PATH
 
-# Wait for MySQL is up and running
-# wait4psql --username=${POSTGRES_USER} --password=${POSTGRES_PASSWORD_FILE} -h postgres -D ${POSTGRES_DB} --quiet
+wait-for-postgres --username=${TYPEORM_USERNAME} --password=${TYPEORM_PASSWORD} -h ${TYPEORM_HOST} -D ${TYPEORM_DATABASE}
 
-exec node -r dotenv-flow/config build/index.js "$@"
+yarn run run-migrations:prod
+
+exec node -r dotenv-flow/config build/src/index.js "$@"
