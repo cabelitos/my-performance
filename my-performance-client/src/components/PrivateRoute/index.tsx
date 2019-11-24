@@ -8,11 +8,14 @@ import FullScreenLoader from '../FullScreenLoader';
 
 const useStyles = makeStyles(() => ({
   container: {
-    width: '100vw',
-    height: '100vh',
-    display: 'flex',
     alignItems: 'center',
+    bottom: 0,
+    display: 'flex',
     justifyContent: 'center',
+    left: 0,
+    position: 'fixed',
+    right: 0,
+    top: 0,
   },
 }));
 

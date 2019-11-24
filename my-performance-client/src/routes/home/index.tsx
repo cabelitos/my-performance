@@ -11,11 +11,14 @@ import routeNames from '../routeNames';
 const useStyles = makeStyles(theme => ({
   root: {
     alignItems: 'center',
+    bottom: 0,
     display: 'flex',
-    justifyContent: 'center',
     flexDirection: 'column',
-    height: '100vh',
-    maxWidth: '100vw',
+    justifyContent: 'center',
+    left: 0,
+    position: 'fixed',
+    right: 0,
+    top: 0,
   },
   spacer: {
     height: theme.spacing(2),

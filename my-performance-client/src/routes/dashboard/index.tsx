@@ -20,10 +20,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: theme.palette.primary.light,
   },
   root: {
+    bottom: 0,
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
-    width: '100vw',
+    left: 0,
+    position: 'fixed',
+    right: 0,
+    top: 0,
   },
   routeContainer: {
     display: 'flex',
