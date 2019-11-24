@@ -5,6 +5,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { set as setDate } from 'date-fns';
+import { InputBaseComponentProps } from '@material-ui/core/InputBase';
 
 import FormSchemas from '../../schema/forms';
 import FormInputText from '../../components/FormInputText';
@@ -59,6 +60,10 @@ const Constants = {
   },
   dateKeyboardButtonProps: { 'aria-label': 'Change date' },
   timeKeyboardButtonProps: { 'aria-label': 'Change time' },
+  inputProps: {
+    inputMode: 'numeric',
+    pattern: '[0-9]*',
+  } as InputBaseComponentProps,
 };
 
 const AddPerformance = (): JSX.Element => {
@@ -116,18 +121,24 @@ const AddPerformance = (): JSX.Element => {
           </Typography>
           <FormInputText
             required
+            inputProps={Constants.inputProps}
+            type="number"
             name="calories"
             label="Calories"
             className={styles.spacer}
           />
           <FormInputText
             required
+            type="number"
+            inputProps={Constants.inputProps}
             label="Distance"
             name="distance"
             className={styles.spacer}
           />
           <FormInputText
             required
+            type="number"
+            inputProps={Constants.inputProps}
             name="energy"
             label="Energy"
             className={styles.spacer}
