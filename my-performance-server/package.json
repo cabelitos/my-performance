@@ -42,8 +42,10 @@
       "start": "cross-env NODE_ENV=development nodemon",
       "build": "cross-env NODE_ENV=production tsc -p tsconfig.json",
       "lint": "tsc --noEmit && eslint '*/**/*.{js,ts}'",
-      "docker:build": "docker-compose build",
-      "docker:up": "cross-env NODE_ENV=production docker-compose up",
+      "docker:build:dev": "docker-compose build",
+      "docker:up:dev": "cross-env NODE_ENV=production docker-compose up -d",
+      "docker:build:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml build",
+      "docker:up:prod": "cross-env NODE_ENV=production docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
       "fixtures": "node -r dotenv-flow/config ./node_modules/.bin/fixtures ./src/fixtures --config ormconfig.json --sync",
       "run-fixtures": "run-s build fixtures",
       "codegen": "graphql-codegen --config codegen.yml"

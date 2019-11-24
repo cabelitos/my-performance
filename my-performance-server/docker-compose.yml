@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  server:
+  my-performance-server:
     build: .
     image: my-performance-server-api:latest
     environment:
@@ -10,39 +10,28 @@ services:
       - TYPEORM_DATABASE=${TYPEORM_DATABASE:-my_performance_db}
       - NODE_ENV=production
     container_name: my-performance-server-api
-    restart: on-failure
-    networks:
-      - private
-      - public
-    ports:
-      - "127.0.0.1:3000:3000"
+    restart: always
     secrets:
       - my-performance-db-password
+    expose:
+      - "3000"
     depends_on:
       - postgres
 
   postgres:
-    image: "postgres:11-alpine"
-    container_name: "my-performance-postgres"
-    restart: "on-failure"
-    ports:
-      - "127.0.0.1:5432:5432"
+    image: postgres:11-alpine
+    container_name: my-performance-postgres
+    restart: always
     expose:
       - "5432"
     volumes:
       - "db-data:/var/lib/postgresql/data"
-    networks:
-      - private
     secrets:
       - my-performance-db-password
     environment:
       - POSTGRES_USER=${TYPEORM_USERNAME:-my_performance}
       - POSTGRES_PASSWORD_FILE=/run/secrets/my-performance-db-password
       - POSTGRES_DB=${TYPEORM_DATABASE:-my_performance_db}
-
-networks:
-  public:
-  private:
 
 volumes:
   db-data:

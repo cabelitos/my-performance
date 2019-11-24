@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+  my-performance-server:
+    networks:
+      - my-performance-server
+      - private
+
+  postgres:
+    networks:
+      - private
+
+networks:
+  private:
+  my-performance-server:
+    external: true
