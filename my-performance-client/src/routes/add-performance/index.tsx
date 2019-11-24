@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'stretch',
-    flex: 1,
+    flexGrow: 1,
+    flexShrink: 0,
     flexDirection: 'column',
   },
   title: {
