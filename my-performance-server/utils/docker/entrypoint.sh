@@ -28,6 +28,10 @@ PATH=$(npm bin):$PATH
 
 wait-for-postgres --username=${TYPEORM_USERNAME} --password=${TYPEORM_PASSWORD} -h ${TYPEORM_HOST} -D ${TYPEORM_DATABASE}
 
+if [ "$RUN_FIXTURES" = "1" ]; then
+  exec yarn run run-fixtures "$@"
+fi
+
 yarn run run-migrations:prod
 
 exec node -r dotenv-flow/config build/src/index.js "$@"
