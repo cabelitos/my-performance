@@ -11,10 +11,9 @@ import {
 import { format as formatDate } from 'date-fns';
 
 import useGetPerformanceEntries from '../../graphql/get-performance-entries';
-import FullScreenLoader from '../../components/FullScreenLoader';
-import ErrorView from '../../components/ErrorView';
 import Dialog from '../../components/Dialog';
 import TableItem, { Constants as TableItemConstants } from './TableItem';
+import LoaderView from '../../components/LoaderView';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -157,59 +156,49 @@ const Classes = (): JSX.Element => {
     [onCloseOpenDialog],
   );
 
-  if (loading) {
-    return <FullScreenLoader />;
-  }
-
-  if (error || !data) {
-    return <ErrorView onClick={onRetry} />;
-  }
-
-  const {
-    performanceEntries: { totalCount },
-  } = data;
-
   return (
-    <div className={styles.container}>
-      <Dialog
-        onAgree={onAgree}
-        onDisagree={onCloseDialog}
-        isOpen={isDialogOpen}
-        title="Delete Class data"
-        subTitle="Are you sure you want to delete?"
-        onClose={onCloseDialog}
-      />
-      <AutoSizer>
-        {({ height, width }): JSX.Element => (
-          <Table
-            rowGetter={rowGetter}
-            rowCount={totalCount}
-            height={height}
-            width={width}
-            rowClassName={styles.flexContainer}
-            rowHeight={TableItemConstants.itemHeight}
-            headerHeight={TableItemConstants.headerHeight}
-          >
-            {columns.map(
-              ({ dataKey, label }: ColumnEntry, i: number): JSX.Element => (
-                <Column
-                  disableSort
-                  className={styles.flexContainer}
-                  columnData={!i ? firstItemColumnData : itemColumnData}
-                  label={label}
-                  key={dataKey}
-                  width={width / columns.length}
-                  dataKey={dataKey}
-                  cellRenderer={cellRenderer}
-                  headerRenderer={headerRenderer}
-                  cellDataGetter={cellDataGetter}
-                />
-              ),
-            )}
-          </Table>
-        )}
-      </AutoSizer>
-    </div>
+    <LoaderView loading={loading} error={error} data={data} onRetry={onRetry}>
+      <div className={styles.container}>
+        <Dialog
+          onAgree={onAgree}
+          onDisagree={onCloseDialog}
+          isOpen={isDialogOpen}
+          title="Delete Class data"
+          subTitle="Are you sure you want to delete?"
+          onClose={onCloseDialog}
+        />
+        <AutoSizer>
+          {({ height, width }): JSX.Element => (
+            <Table
+              rowGetter={rowGetter}
+              rowCount={data.performanceEntries.totalCount}
+              height={height}
+              width={width}
+              rowClassName={styles.flexContainer}
+              rowHeight={TableItemConstants.itemHeight}
+              headerHeight={TableItemConstants.headerHeight}
+            >
+              {columns.map(
+                ({ dataKey, label }: ColumnEntry, i: number): JSX.Element => (
+                  <Column
+                    disableSort
+                    className={styles.flexContainer}
+                    columnData={!i ? firstItemColumnData : itemColumnData}
+                    label={label}
+                    key={dataKey}
+                    width={width / columns.length}
+                    dataKey={dataKey}
+                    cellRenderer={cellRenderer}
+                    headerRenderer={headerRenderer}
+                    cellDataGetter={cellDataGetter}
+                  />
+                ),
+              )}
+            </Table>
+          )}
+        </AutoSizer>
+      </div>
+    </LoaderView>
   );
 };
 
