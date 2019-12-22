@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       padding: theme.spacing(2, 0),
     },
   },
+  safeArea: {
+    background: theme.palette.primary.light,
+    paddingBottom: 'env(safe-area-inset-bottom)',
+  },
 }));
 
 const Dashboard = ({
@@ -73,37 +77,39 @@ const Dashboard = ({
           <PrivateRoute component={Charts} />
         </Switch>
       </div>
-      <BottomNavigation
-        value={selectedTab}
-        onChange={onSelectedTabChanged}
-        showLabels
-        className={styles.bottomBar}
-      >
-        <BottomNavigationAction
-          component={Link}
-          label="Add"
-          to={`${url}${routeNames.add}`}
-          icon={<AddCircle />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          label="Classes"
-          to={`${url}${routeNames.classes}`}
-          icon={<DirectionsBikeIcon />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          label="Charts"
-          to={url}
-          icon={<BarChart />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          to={`${url}${routeNames.profile}`}
-          label="Profile"
-          icon={<AccountCircle />}
-        />
-      </BottomNavigation>
+      <div className={styles.safeArea}>
+        <BottomNavigation
+          value={selectedTab}
+          onChange={onSelectedTabChanged}
+          showLabels
+          className={styles.bottomBar}
+        >
+          <BottomNavigationAction
+            component={Link}
+            label="Add"
+            to={`${url}${routeNames.add}`}
+            icon={<AddCircle />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            label="Classes"
+            to={`${url}${routeNames.classes}`}
+            icon={<DirectionsBikeIcon />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            label="Charts"
+            to={url}
+            icon={<BarChart />}
+          />
+          <BottomNavigationAction
+            component={Link}
+            to={`${url}${routeNames.profile}`}
+            label="Profile"
+            icon={<AccountCircle />}
+          />
+        </BottomNavigation>
+      </div>
     </div>
   );
 };
